@@ -1,4 +1,4 @@
-package com.krishan.spotlight
+package com.krishan.spotlight.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.krishan.spotlight.ui.theme.SpotlightTheme
+import com.krishan.spotlight.presentation.ui.theme.SpotlightTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

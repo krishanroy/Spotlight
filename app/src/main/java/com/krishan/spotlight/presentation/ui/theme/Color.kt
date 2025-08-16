@@ -1,4 +1,4 @@
-package com.krishan.spotlight.ui.theme
+package com.krishan.spotlight.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

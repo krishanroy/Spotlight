@@ -1,6 +1,5 @@
-package com.krishan.spotlight.ui.theme
+package com.krishan.spotlight.presentation.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
