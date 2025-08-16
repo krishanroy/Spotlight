@@ -12,8 +12,8 @@ interface NewsApi {
         @Query("category") category: String?,
         @Query("sources") sources: String?,
         @Query("q") query: String?,
-        @Query("pageSize") pageSize: String?,
-        @Query("page") page: String?
+        @Query("pageSize") pageSize: Int?,
+        @Query("page") page: Int?
     ): NewsDto
 
     @GET("everything")
