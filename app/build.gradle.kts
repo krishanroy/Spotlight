@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -8,6 +10,18 @@ android {
     namespace = "com.krishan.spotlight"
     compileSdk = 36
 
+    val localProperties: Properties = Properties().apply {
+        val localProjectsFile = project.rootProject.file("local.properties")
+        if (localProjectsFile.exists()) {
+            localProjectsFile.inputStream().use { inputStream ->
+                load(inputStream)
+            }
+        }
+    }
+
+    val newsApiKey = localProperties["NEWS_API_KEY"]
+
+
     defaultConfig {
         applicationId = "com.krishan.spotlight"
         minSdk = 28
@@ -16,6 +30,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "NEWS_API_KEY",
+            "\"${newsApiKey}\""
+        )
     }
 
     buildTypes {
@@ -33,6 +53,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
