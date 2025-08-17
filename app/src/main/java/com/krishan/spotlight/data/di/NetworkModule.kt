@@ -3,6 +3,8 @@ package com.krishan.spotlight.data.di
 import com.krishan.spotlight.BuildConfig
 import com.krishan.spotlight.data.Constants
 import com.krishan.spotlight.data.remote.api.NewsApi
+import com.krishan.spotlight.data.repository.NewsRepositoryImpl
+import com.krishan.spotlight.domain.repository.NewsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,7 +49,8 @@ object NetworkModule {
         //  This tells Retrofit which MIME type to attach to request bodies and expect in responses.
         val contentType = "application/json".toMediaType()
         val json: Json = Json {
-            ignoreUnknownKeys = true // lets the parser skip extra fields coming from the server that aren’t in your data classes.
+            ignoreUnknownKeys =
+                true // lets the parser skip extra fields coming from the server that aren’t in your data classes.
             coerceInputValues = true // fills in default values for missing or null fields instead of throwing an error.
         }
         /*
@@ -75,4 +78,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun providesNewsApi(retrofit: Retrofit): NewsApi = retrofit.create(NewsApi::class.java)
+
+    @Provides
+    fun providesNewsRepository(newsApi: NewsApi): NewsRepository = NewsRepositoryImpl(newsApi = newsApi)
 }
