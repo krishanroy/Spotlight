@@ -3,8 +3,10 @@ package com.krishan.spotlight.presentation.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.krishan.spotlight.domain.Resource
+import com.krishan.spotlight.domain.model.Article
 import com.krishan.spotlight.domain.model.News
 import com.krishan.spotlight.domain.usecases.GetTopHeadlinesUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -16,10 +18,12 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class HomeViewModel @Inject constructor(private val getTopHeadlinesUseCase: GetTopHeadlinesUseCase) : ViewModel() {
-    private val _homeUiMutableStateFlow = MutableStateFlow<HomeUiState>(HomeUiState())
+    private val _homeUiMutableStateFlow = MutableStateFlow(HomeUiState())
     val homeUiStateFlow = _homeUiMutableStateFlow.asStateFlow().onStart {
         fetchNews()
     }.stateIn(
@@ -29,8 +33,23 @@ class HomeViewModel @Inject constructor(private val getTopHeadlinesUseCase: GetT
     )
 
     private val _homeUiEffectMutableSharedFlow = MutableSharedFlow<HomeUiEffect>()
-    val homeUiEffectSharedFlow: SharedFlow<HomeUiEffect> = _homeUiEffectMutableSharedFlow.asSharedFlow()
+    val homeUiEffectSharedFlow: SharedFlow<HomeUiEffect> = _homeUiEffectMutableSharedFlow
+    fun handleUiAction(action: HomeUiAction) {
+        when (action) {
+            is HomeUiAction.OnCategorySelected -> updateSelectedCategory(action.category)
+            is HomeUiAction.OnArticleClicked -> navigateToDetail(action.article)
+        }
+    }
 
+    private fun updateSelectedCategory(category: String) {
+        // TODO
+    }
+
+    private fun navigateToDetail(article: Article) {
+        viewModelScope.launch {
+            _homeUiEffectMutableSharedFlow.emit(HomeUiEffect.NavigateToDetail(article = article))
+        }
+    }
 
     private fun fetchNews() =
         getTopHeadlinesUseCase(
