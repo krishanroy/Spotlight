@@ -22,6 +22,8 @@ retrofit = "3.0.0"
 navigation = "2.9.3"
 serialization = "1.9.0"
 
+coilCompose = "2.7.0"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -52,6 +54,9 @@ converter-kotlinx-serialization = { module = "com.squareup.retrofit2:converter-k
 # Navigation - Serialization
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+
+# for image rendering
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

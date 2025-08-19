@@ -99,4 +99,7 @@ dependencies {
     // Navigation - Serialization
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+
+    // Image Rendering
+    implementation(libs.coil.compose)
 }
