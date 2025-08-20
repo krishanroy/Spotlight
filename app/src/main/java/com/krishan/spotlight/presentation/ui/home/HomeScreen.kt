@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,11 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -32,8 +32,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -83,6 +83,7 @@ fun HomeScreen(
             uiState.articles.isNotEmpty() -> HomeScreenList(
                 innerPadding = innerPadding,
                 articles = uiState.articles,
+                selectedArticle = uiState.featuredArticle,
                 onAction = onAction
             )
         }
@@ -93,102 +94,113 @@ fun HomeScreen(
 private fun HomeScreenList(
     innerPadding: PaddingValues,
     articles: List<Article>,
+    selectedArticle: Article,
     onAction: (HomeUiAction) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        // Featured Item
         item {
-            FeaturedScreenItem(paddingValues = innerPadding, article = articles.filter { article ->
-                article.description?.isNotEmpty() == true && article.urlToImage?.isNotEmpty() == true
-            }.random()) { article ->
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    article.description.orEmpty(),
-                    modifier = Modifier.padding(horizontal = 12.dp),
-                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W300)
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Box(contentAlignment = Alignment.CenterEnd) {
-                    Text(
-                        "Read More..",
-                        modifier = Modifier
-                            .padding(horizontal = 12.dp)
-                            .clickable(onClick = {
-                                onAction(HomeUiAction.OnArticleClicked(article))
-                            }),
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.W500,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    )
-                }
-            }
+            HomeFeaturedItemSection(innerPadding, selectedArticle, onAction)
         }
-        // Latest News Title
         item {
-            HorizontalDivider(modifier = Modifier.padding(horizontal = 12.dp))
-            Spacer(modifier = Modifier.height(20.dp))
             Text(
                 "Latest News",
                 modifier = Modifier.padding(start = 12.dp),
                 style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.W500)
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(20.dp))
         }
-        // Latest News List
         items(articles) { article ->
-            Card(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(4.dp),
-                colors = CardDefaults.cardColors().copy(containerColor = Color.Transparent),
-                onClick = {
+            LatestNewsSection(article = article, onAction = onAction)
+        }
+    }
+}
+
+@Composable
+private fun HomeFeaturedItemSection(
+    innerPadding: PaddingValues,
+    selectedArticle: Article,
+    onAction: (HomeUiAction) -> Unit
+) {
+    FeaturedScreenItem(paddingValues = innerPadding, article = selectedArticle) { article ->
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            article.description.orEmpty(),
+            modifier = Modifier.padding(horizontal = 12.dp),
+            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.W300)
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            "Read More..",
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .clickable(onClick = {
                     onAction(HomeUiAction.OnArticleClicked(article))
-                }) {
-                Row(Modifier.padding(horizontal = 12.dp)) {
-                    AsyncImage(
-                        model = article.urlToImage,
-                        contentDescription = "Home Page Article image",
-                        modifier = Modifier
-                            .size(120.dp)
-                            .padding(end = 12.dp)
-                            .clip(
-                                RoundedCornerShape(8.dp)
-                            ),
-                        contentScale = ContentScale.Crop,
-                    )
-                    Column {
-                        Text(
-                            article.title.orEmpty(),
-                            style = TextStyle(
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily.Serif
-                            )
-                        )
-                        Spacer(modifier = Modifier.height(30.dp))
-                        Text(
-                            article.author.orEmpty(),
-                            style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.W500)
-                        )
-                        Spacer(modifier = Modifier.height(14.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(article.source?.name.orEmpty(), style = TextStyle(fontSize = 10.sp))
-                            Text(
-                                formatRelativeTimeLocalized(article.publishedAt.orEmpty()),
-                                style = TextStyle(fontSize = 10.sp)
-                            )
-                        }
-                    }
-                }
+                }),
+            style = TextStyle(
+                fontSize = 16.sp,
+                fontWeight = FontWeight.W500,
+                color = MaterialTheme.colorScheme.primary
+            )
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        HorizontalDivider(modifier = Modifier.padding(horizontal = 12.dp))
+    }
+}
+
+@Composable
+private fun LatestNewsSection(
+    article: Article,
+    onAction: (HomeUiAction) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min) // Ensures all children match tallest height
+            .padding(vertical = 4.dp, horizontal = 12.dp)
+            .clickable(onClick = {
+                onAction(HomeUiAction.OnArticleClicked(article))
+            }),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AsyncImage(
+            model = article.urlToImage,
+            contentDescription = null,
+            modifier = Modifier
+                .size(60.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = article.title.orEmpty(),
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = article.source?.name.orEmpty(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+                Text(
+                    text = formatRelativeTimeLocalized(isoString = article.publishedAt.orEmpty()),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
             }
         }
     }

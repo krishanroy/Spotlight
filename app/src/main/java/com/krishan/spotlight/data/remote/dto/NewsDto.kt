@@ -46,7 +46,7 @@ data class SourceDto(
 )
 
 fun NewsDto.toDomain(): News =
-    News(status = status, totalResults = totalResults, articles = articles?.map { it?.toDomain() })
+    News(status = status, totalResults = totalResults, articles = articles?.mapNotNull { it?.toDomain() } as List<Article>)
 
 // Always making sure with the product or the BE what is the use of the id and what is the consequence of it being null
 // is a good idea so that no error gets unreported. At the same time, error logging websites should not get spammed.

@@ -6,6 +6,7 @@ data class HomeUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val articles: List<Article> = emptyList(),
+    val featuredArticle: Article = Article(),
     val selectedCountry: String? = "US",
     val selectedCategory: String? = "technology",
     val categoryMap: Map<String, String> = mapOf(

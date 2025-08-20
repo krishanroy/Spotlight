@@ -63,9 +63,13 @@ class HomeViewModel @Inject constructor(private val getTopHeadlinesUseCase: GetT
                 Resource.Loading -> updateUiState { copy(isLoading = true) }
                 is Resource.Error -> updateUiState { copy(isLoading = false, error = result.message) }
                 is Resource.Success -> updateUiState {
+                    val notNullArticles = result.data.articles.filter { it.urlToImage?.isNotEmpty() == true }
+                    val selectedArticle = notNullArticles[0]
+                    val articlesForList: List<Article> = notNullArticles - selectedArticle
                     copy(
                         isLoading = false,
-                        articles = result.data.articles?.filterNotNull() ?: emptyList()
+                        articles = articlesForList,
+                        featuredArticle = selectedArticle
                     )
                 }
             }
