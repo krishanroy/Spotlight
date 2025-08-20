@@ -101,8 +101,3 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 - [NewsAPI.org](https://newsapi.org/) for the data
 - Jetpack Compose team for pushing UI boundaries
-```
-
----
-
-Let me know if you want to auto-generate badges, add a changelog section, or scaffold contribution guidelines. I can also help you write a README tailored for recruiters or open-source contributors.
