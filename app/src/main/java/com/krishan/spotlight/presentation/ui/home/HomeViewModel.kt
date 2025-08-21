@@ -41,7 +41,10 @@ class HomeViewModel @Inject constructor(private val getTopHeadlinesUseCase: GetT
     }
 
     private fun updateSelectedCategory(category: String) {
-        // TODO
+        updateUiState {
+            copy(selectedCategory = category)
+        }
+        fetchNews()
     }
 
     private fun navigateToDetail(article: Article) {

@@ -22,6 +22,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -50,49 +52,56 @@ fun HomeScreen(
     uiEffect: SharedFlow<HomeUiEffect>,
     onArticleClicked: (Article) -> Unit
 ) {
+    LaunchedEffect(key1 = Unit) {
+        uiEffect.collect { effect ->
+            when (effect) {
+                is HomeUiEffect.NavigateToDetail -> onArticleClicked(effect.article)
+            }
+
+        }
+    }
     Scaffold(topBar = {
         TopAppBar(title = {
             Text("Home")
         })
-    }) { innerPadding ->
-        LaunchedEffect(key1 = Unit) {
-            uiEffect.collect { effect ->
-                when (effect) {
-                    is HomeUiEffect.NavigateToDetail -> onArticleClicked(effect.article)
+    }) { paddingValues ->
+        Column(modifier = Modifier.padding(paddingValues)) {
+            CategoryTab(
+                categoryMap = uiState.categoryMap,
+                selectedCategory = uiState.selectedCategory,
+                onCategorySelected = { selectedCategory ->
+                    onAction(
+                        HomeUiAction.OnCategorySelected(selectedCategory)
+                    )
+                })
+            when {
+                uiState.isLoading -> Box(
+                    contentAlignment = Alignment.Center, modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    CircularProgressIndicator()
                 }
 
-            }
-        }
-        when {
-            uiState.isLoading -> Box(
-                contentAlignment = Alignment.Center, modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
-                CircularProgressIndicator()
-            }
+                uiState.error != null -> Box(
+                    contentAlignment = Alignment.Center, modifier = Modifier
+                        .fillMaxSize()
 
-            uiState.error != null -> Box(
-                contentAlignment = Alignment.Center, modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
-                Text("Something went wrong")
-            }
+                ) {
+                    Text("Something went wrong")
+                }
 
-            uiState.articles.isNotEmpty() -> HomeScreenList(
-                innerPadding = innerPadding,
-                articles = uiState.articles,
-                selectedArticle = uiState.featuredArticle,
-                onAction = onAction
-            )
+                uiState.articles.isNotEmpty() -> HomeScreenList(
+                    articles = uiState.articles,
+                    selectedArticle = uiState.featuredArticle,
+                    onAction = onAction
+                )
+            }
         }
     }
 }
 
 @Composable
 private fun HomeScreenList(
-    innerPadding: PaddingValues,
     articles: List<Article>,
     selectedArticle: Article,
     onAction: (HomeUiAction) -> Unit
@@ -102,7 +111,7 @@ private fun HomeScreenList(
             .fillMaxSize()
     ) {
         item {
-            HomeFeaturedItemSection(innerPadding, selectedArticle, onAction)
+            HomeFeaturedItemSection(selectedArticle, onAction)
         }
         item {
             Text(
@@ -119,12 +128,30 @@ private fun HomeScreenList(
 }
 
 @Composable
+fun CategoryTab(
+    categoryMap: Map<String, String>,
+    selectedCategory: String,
+    onCategorySelected: (String) -> Unit
+) {
+    ScrollableTabRow(
+        edgePadding = 12.dp,
+        selectedTabIndex = categoryMap.keys.indexOf(selectedCategory),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        categoryMap.forEach { (category, label) ->
+            Tab(selected = category == selectedCategory, onClick = { onCategorySelected(category) }) {
+                Text(text = label, modifier = Modifier.padding(vertical = 6.dp, horizontal = 4.dp))
+            }
+        }
+    }
+}
+
+@Composable
 private fun HomeFeaturedItemSection(
-    innerPadding: PaddingValues,
     selectedArticle: Article,
     onAction: (HomeUiAction) -> Unit
 ) {
-    FeaturedScreenItem(paddingValues = innerPadding, article = selectedArticle) { article ->
+    FeaturedScreenItem(article = selectedArticle, paddingValues = PaddingValues(top = 12.dp)) { article ->
         Spacer(modifier = Modifier.height(20.dp))
         Text(
             article.description.orEmpty(),
@@ -147,6 +174,7 @@ private fun HomeFeaturedItemSection(
         )
         Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider(modifier = Modifier.padding(horizontal = 12.dp))
+        Spacer(modifier = Modifier.height(20.dp))
     }
 }
 
