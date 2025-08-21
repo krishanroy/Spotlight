@@ -23,10 +23,12 @@ import com.krishan.spotlight.domain.model.Article
 
 @Composable
 fun FeaturedScreenItem(
-    paddingValues: PaddingValues,
+    paddingValues: PaddingValues? = null,
     article: Article,
     bottomContent: @Composable (Article) -> Unit
 ) {
+    val paddingValues: PaddingValues = paddingValues ?: PaddingValues(0.dp)
+    paddingValues
     Column(
         modifier = Modifier
             .fillMaxSize()
