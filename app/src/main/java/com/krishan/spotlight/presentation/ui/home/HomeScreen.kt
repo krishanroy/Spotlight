@@ -33,12 +33,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.krishan.spotlight.R
 import com.krishan.spotlight.domain.model.Article
 import com.krishan.spotlight.domain.util.formatRelativeTimeLocalized
 import com.krishan.spotlight.presentation.ui.common.FeaturedScreenItem
@@ -199,7 +201,8 @@ private fun LatestNewsSection(
             modifier = Modifier
                 .size(60.dp)
                 .clip(RoundedCornerShape(8.dp)),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            placeholder = painterResource(R.drawable.placeholder)
         )
 
         Spacer(modifier = Modifier.width(12.dp))

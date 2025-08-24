@@ -12,7 +12,7 @@ sealed class DetailUiAction {
 }
 
 sealed class DetailUiEffect {
-    data object OpenLinkInBrowser : DetailUiEffect()
+    data object OpenArticleUrlInABrowser : DetailUiEffect()
     data object ShareArticle : DetailUiEffect()
     data object NavigateBack : DetailUiEffect()
 }

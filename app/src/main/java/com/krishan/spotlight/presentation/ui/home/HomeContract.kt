@@ -8,7 +8,7 @@ data class HomeUiState(
     val articles: List<Article> = emptyList(),
     val featuredArticle: Article = Article(),
     val selectedCountry: String? = "US",
-    val selectedCategory: String = "technology",
+    val selectedCategory: String = "general",
     val categoryMap: Map<String, String> = mapOf(
         "technology" to "Technology",
         "business" to "Business",
