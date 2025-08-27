@@ -48,14 +48,14 @@ object NetworkModule {
         //  toMediaType() parses the string into an OkHttp MediaType object.
         //  This tells Retrofit which MIME type to attach to request bodies and expect in responses.
         val contentType = "application/json".toMediaType()
-        val json: Json = Json {
+        val json = Json {
             ignoreUnknownKeys =
                 true // lets the parser skip extra fields coming from the server that aren’t in your data classes.
             coerceInputValues = true // fills in default values for missing or null fields instead of throwing an error.
         }
         /*
         * This is how all these work
-       [ Your Kotlin Model ]
+       [ Your Kotlin Model for request]
           ↓ serialize
        [ json.encodeToString(...) ]
           ↓ Converter.Factory
@@ -65,7 +65,7 @@ object NetworkModule {
           ↓ Converter.Factory
        [ json.decodeFromString(...) ]
           ↓ deserialize
-       [ Your Kotlin Model ]
+       [ Your Kotlin Model for Response ]
 
         * */
         return Retrofit.Builder()
