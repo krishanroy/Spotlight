@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -66,7 +67,7 @@ fun DetailScreen(
                         type = "text/plain"
                     }
 
-                    context.startActivity(Intent.createChooser(intent, "Share via"))
+                    context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_via)))
                 }
             }
         }
@@ -116,7 +117,7 @@ private fun DetailsTopAppBar(
     onShareArticle: () -> Unit,
     onOpenUrlInABrowser: () -> Unit
 ) {
-    TopAppBar(title = { Text("Details") }, navigationIcon = {
+    TopAppBar(title = { Text(stringResource(R.string.details)) }, navigationIcon = {
         IconButton(onClick = { onNavigateBack.invoke() }) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
         }

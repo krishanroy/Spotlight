@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -64,7 +65,7 @@ fun HomeScreen(
     }
     Scaffold(topBar = {
         TopAppBar(title = {
-            Text("Home")
+            Text(stringResource(R.string.home))
         })
     }) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
@@ -89,7 +90,7 @@ fun HomeScreen(
                         .fillMaxSize()
 
                 ) {
-                    Text("Something went wrong")
+                    Text(stringResource(R.string.something_went_wrong))
                 }
 
                 uiState.articles.isNotEmpty() -> HomeScreenList(
@@ -117,7 +118,7 @@ private fun HomeScreenList(
         }
         item {
             Text(
-                "Latest News",
+                stringResource(R.string.latest_news),
                 modifier = Modifier.padding(start = 12.dp),
                 style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.W500)
             )
